@@ -2,7 +2,7 @@
 
 ![httpsentinel](docs/assets/banner.png)
 
-> 🌐 **Page du projet :** [vbenji23.github.io/httpsentinel](https://vbenji23.github.io/httpsentinel/)
+> 🌐 **Page du projet :** https://vbenji23.github.io/HTTPSENTINEL2/
 
 Scanner de sécurité web en ligne de commande. Donne-lui une URL, il analyse la surface exposée et produit un rapport de durcissement.
 
