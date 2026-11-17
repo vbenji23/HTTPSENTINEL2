@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>httpsentinel — Scanner de sécurité web</title>
+<meta name="description" content="Scanner de sécurité web en ligne de commande : en-têtes HTTP, TLS, fingerprinting et fichiers exposés.">
+<style>
+  :root{
+    --bg:#0d1117; --bg2:#161b22; --term:#010409; --line:#30363d;
+    --txt:#e6edf3; --muted:#8b949e; --teal:#2dd4bf; --blue:#3b82f6;
+    --high:#ff5f56; --med:#ffbd2e; --low:#58a6ff; --ok:#27c93f;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6}
+  .mono{font-family:'JetBrains Mono','SF Mono','Courier New',monospace}
+  .wrap{max-width:900px;margin:0 auto;padding:0 24px}
+
+  /* Hero */
+  header{padding:80px 0 60px;text-align:center;border-bottom:1px solid var(--line)}
+  .logo{font-size:56px;font-weight:800}
+  .logo .mono{background:linear-gradient(90deg,var(--teal),var(--blue));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .tagline{color:var(--muted);font-size:20px;margin-top:12px}
+  .cta{margin-top:32px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+  .btn{padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;font-size:15px;transition:.15s}
+  .btn-primary{background:linear-gradient(90deg,var(--teal),var(--blue));color:#02121a}
+  .btn-primary:hover{opacity:.9}
+  .btn-ghost{border:1px solid var(--line);color:var(--txt)}
+  .btn-ghost:hover{background:var(--bg2)}
+
+  /* Terminal */
+  .term{margin:48px 0;border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+  .term-bar{background:var(--bg2);padding:12px 16px;display:flex;align-items:center;gap:8px}
+  .dot{width:13px;height:13px;border-radius:50%}
+  .term-title{flex:1;text-align:center;color:#6e7681;font-size:14px}
+  .term-body{background:var(--term);padding:22px;font-size:15px;overflow-x:auto}
+  .term-body .line{white-space:pre}
+  .cmd{color:var(--teal)}
+  .tag-high{color:var(--high);font-weight:700}
+  .tag-med{color:var(--med);font-weight:700}
+  .tag-low{color:var(--low)}
+  .tag-ok{color:var(--ok)}
+  .txt{color:#c9d1d9}
+  .bilan{color:var(--muted);margin-top:8px}
+
+  /* Features */
+  section{padding:56px 0}
+  h2{font-size:28px;margin-bottom:28px;text-align:center}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
+  .card{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:24px;transition:.15s}
+  .card:hover{border-color:var(--teal);transform:translateY(-3px)}
+  .card .ico{font-size:28px;margin-bottom:10px}
+  .card h3{font-size:17px;margin-bottom:6px}
+  .card p{color:var(--muted);font-size:14px}
+
+  /* Install */
+  .code{background:var(--term);border:1px solid var(--line);border-radius:10px;padding:20px;font-size:14px;overflow-x:auto;color:#c9d1d9;white-space:pre}
+  .code .c{color:#6e7681}
+
+  .warn{background:rgba(255,189,46,.08);border:1px solid rgba(255,189,46,.3);border-radius:10px;padding:18px;color:#e6c07b;font-size:14px;margin-top:24px}
+
+  footer{border-top:1px solid var(--line);padding:40px 0;text-align:center;color:var(--muted);font-size:14px}
+  footer a{color:var(--teal);text-decoration:none}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="logo">🛡️ <span class="mono">httpsentinel</span></div>
+    <p class="tagline">Scanner de sécurité web en ligne de commande</p>
+    <div class="cta">
+      <a class="btn btn-primary" href="exemple-rapport.html">📊 Voir un rapport d'exemple</a>
+      <a class="btn btn-ghost" href="https://github.com/vbenji23/httpsentinel">⭐ Voir sur GitHub</a>
+      <a class="btn btn-ghost" href="#install">Installation</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <!-- Démo terminal -->
+  <div class="term">
+    <div class="term-bar">
+      <span class="dot" style="background:#ff5f56"></span>
+      <span class="dot" style="background:#ffbd2e"></span>
+      <span class="dot" style="background:#27c93f"></span>
+      <span class="term-title mono">bash — httpsentinel</span>
+    </div>
+    <div class="term-body mono">
+<div class="line"><span class="cmd">$</span> <span class="txt">python -m httpsentinel https://baie42.fr --html rapport.html</span></div>
+<div class="line"><span class="tag-high">[ HIGH ]</span> <span class="txt">Exposé : /.env</span></div>
+<div class="line"><span class="tag-high">[ HIGH ]</span> <span class="txt">Exposé : /.git/HEAD</span></div>
+<div class="line"><span class="tag-med">[MEDIUM]</span> <span class="txt">Content-Security-Policy absent</span></div>
+<div class="line"><span class="tag-low">[ LOW  ]</span> <span class="txt">X-Frame-Options absent</span></div>
+<div class="line"><span class="tag-ok">[  OK  ]</span> <span class="txt">Version TLS : TLSv1.3</span></div>
+<div class="line"><span class="tag-ok">[  OK  ]</span> <span class="txt">Strict-Transport-Security présent</span></div>
+<div class="line bilan">Bilan : 2 HIGH · 1 MEDIUM · 1 LOW · 0 INFO · 2 OK</div>
+    </div>
+  </div>
+</div>
+
+<section id="features">
+  <div class="wrap">
+    <h2>Ce que httpsentinel analyse</h2>
+    <div class="grid">
+      <div class="card">
+        <div class="ico">📋</div>
+        <h3>En-têtes de sécurité</h3>
+        <p>CSP, HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy… présents ou manquants.</p>
+      </div>
+      <div class="card">
+        <div class="ico">🔒</div>
+        <h3>TLS & certificat</h3>
+        <p>Version TLS négociée, émetteur et date d'expiration, alerte si le certificat expire bientôt.</p>
+      </div>
+      <div class="card">
+        <div class="ico">🔎</div>
+        <h3>Fingerprinting</h3>
+        <p>Identification du serveur et des technologies via les en-têtes et les cookies connus.</p>
+      </div>
+      <div class="card">
+        <div class="ico">📂</div>
+        <h3>Fichiers exposés</h3>
+        <p>Test de chemins sensibles : .git/, .env, backup.zip, phpinfo.php, robots.txt…</p>
+      </div>
+      <div class="card">
+        <div class="ico">📊</div>
+        <h3>Rapports</h3>
+        <p>Sortie terminal colorée, export JSON pour l'automatisation, export HTML pour partager.</p>
+      </div>
+      <div class="card">
+        <div class="ico">⚙️</div>
+        <h3>Prêt pour la CI</h3>
+        <p>Code de sortie non nul en cas de constat critique : intégrable dans un pipeline DevSecOps.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="install">
+  <div class="wrap">
+    <h2>Installation & utilisation</h2>
+    <div class="code"><span class="c"># Cloner et installer</span>
+git clone https://github.com/vbenji23/httpsentinel.git
+cd httpsentinel
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+
+<span class="c"># Scanner une cible</span>
+python -m httpsentinel https://exemple.fr
+
+<span class="c"># Exporter un rapport HTML</span>
+python -m httpsentinel https://exemple.fr --html rapport.html</div>
+    <div class="warn">⚠️ <strong>Cadre légal</strong> — N'utilisez httpsentinel que sur des systèmes qui vous appartiennent ou pour lesquels vous disposez d'une autorisation écrite. En France, scanner un système tiers sans permission est réprimé par l'art. 323-1 du Code pénal.</div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>Projet open-source sous licence MIT · développé par Benjamin Vincenti</p>
+    <p style="margin-top:8px"><a href="https://github.com/vbenji23/httpsentinel">github.com/vbenji23/httpsentinel</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

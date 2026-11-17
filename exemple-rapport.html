@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>httpsentinel — https://baie42.fr</title>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 2rem; color: #1a1a1a; }
+  h1 { font-size: 1.4rem; }
+  .summary { margin: 1rem 0; font-weight: 600; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { text-align: left; padding: .5rem .75rem; border-bottom: 1px solid #ddd; vertical-align: top; }
+  th { background: #f4f4f4; }
+  tr.HIGH td:first-child { color: #c0392b; font-weight: 700; }
+  tr.MEDIUM td:first-child { color: #d68910; font-weight: 700; }
+  tr.LOW td:first-child { color: #148f77; }
+  tr.INFO td:first-child { color: #7f8c8d; }
+  tr.OK td:first-child { color: #27ae60; }
+</style>
+</head>
+<body>
+<h1>🛡️ httpsentinel — https://baie42.fr</h1>
+<div class="summary">Bilan : 2 HIGH · 2 MEDIUM · 2 LOW · 2 INFO · 2 OK</div>
+<table>
+<thead><tr><th>Sévérité</th><th>Constat</th><th>Détail</th><th>Recommandation</th></tr></thead>
+<tbody>
+<tr class='HIGH'><td>HIGH</td><td>Exposé : /.env</td><td>HTTP 200 sur https://baie42.fr/.env</td><td>Fichier d&#x27;environnement exposé : secrets potentiels.</td></tr>
+<tr class='HIGH'><td>HIGH</td><td>Exposé : /.git/HEAD</td><td>HTTP 200 sur https://baie42.fr/.git/HEAD</td><td>Dépôt Git exposé : le code source peut être reconstitué.</td></tr>
+<tr class='MEDIUM'><td>MEDIUM</td><td>Content-Security-Policy absent</td><td></td><td>Définir une CSP pour limiter les sources de scripts et réduire le risque XSS.</td></tr>
+<tr class='MEDIUM'><td>MEDIUM</td><td>Version TLS : TLSv1.1</td><td></td><td>Désactiver les versions &lt; TLS 1.2.</td></tr>
+<tr class='LOW'><td>LOW</td><td>X-Frame-Options absent</td><td></td><td>Positionner X-Frame-Options: DENY ou SAMEORIGIN contre le clickjacking.</td></tr>
+<tr class='LOW'><td>LOW</td><td>X-Content-Type-Options absent</td><td></td><td>Ajouter X-Content-Type-Options: nosniff pour bloquer le MIME-sniffing.</td></tr>
+<tr class='INFO'><td>INFO</td><td>Serveur : nginx/1.18.0</td><td></td><td>Masquer la bannière détaillée pour limiter la fuite d&#x27;information.</td></tr>
+<tr class='INFO'><td>INFO</td><td>Technologie probable : PHP</td><td></td><td></td></tr>
+<tr class='OK'><td>OK</td><td>Certificat valable 312 jour(s)</td><td>Émetteur : Let&#x27;s Encrypt — expire le 2027-09-25</td><td></td></tr>
+<tr class='OK'><td>OK</td><td>Strict-Transport-Security présent</td><td>max-age=31536000; includeSubDomains</td><td></td></tr>
+</tbody>
+</table>
+</body>
+</html>
